@@ -1,0 +1,185 @@
+---
+  version: '3.6'
+
+  x-commons-depends:
+    &depends-on-waterauth
+    depends_on:
+      - water-auth
+
+  secrets:
+    tomcat_ssl_crt:
+      file: ./ssl/tomcat-wildcard-dev.crt
+    tomcat_ssl_key:
+      file: ./ssl/tomcat-wildcard-dev.key
+
+  services:
+    mock-s3:
+      image: andrewgaul/s3proxy
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/mock-s3/config.env
+      hostname: s3.mock.server
+      ports:
+        - "8080:80"
+
+    smtp-server:
+      image: digiplant/fake-smtp:latest
+      network_mode: "host"
+      hostname: smtp.notification.server
+
+    water-auth:
+      image: cidasdpdasartip.cr.usgs.gov:8447/water_auth_server:latest
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/water-auth/config.env
+        - ./docker/secrets/water-auth/secrets.env
+      ports:
+        - "8443:8443"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+
+    mlr-legacy-db:
+      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy-db:latest
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/mlr-legacy-db/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-legacy-db/secrets.env
+        - ./docker/secrets/common/secrets.env
+      ports:
+        - "5432:5432"
+
+    mlr-legacy:
+      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy:latest
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/mlr-legacy/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-legacy/secrets.env
+        - ./docker/secrets/common/secrets.env
+      ports:
+        - "6010:6010"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      depends_on:
+        - water-auth
+        - mlr-legacy-db
+
+    mlr-notification:
+      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-notification:latest
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/mlr-notification/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-notification/secrets.env
+        - ./docker/secrets/common/secrets.env
+      ports:
+        - "6025:6025"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      depends_on:
+        - water-auth
+        - smtp-server
+
+    mlr-legacy-transformer:
+      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy-transformer:latest
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/mlr-legacy-transformer/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-legacy-transformer/secrets.env
+        - ./docker/secrets/common/secrets.env
+      ports:
+        - "6020:6020"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /home/python/certificates/ssl.crt
+        - source: tomcat_ssl_key
+          target: /home/python/certificates/ssl.key
+      << : *depends-on-waterauth
+
+    mlr-wsc-file-exporter:
+      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-wsc-file-exporter:latest
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/mlr-wsc-file-exporter/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-wsc-file-exporter/secrets.env
+        - ./docker/secrets/common/secrets.env
+      ports:
+        - "6024:6024"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /home/python/certificates/ssl.crt
+        - source: tomcat_ssl_key
+          target: /home/python/certificates/ssl.key
+      << : *depends-on-waterauth
+
+    mlr-validator:
+      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-validator:latest
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/mlr-validator/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-legacy/secrets.env
+        - ./docker/secrets/common/secrets.env
+      ports:
+        - "6027:6027"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /home/python/certificates/ssl.crt
+        - source: tomcat_ssl_key
+          target: /home/python/certificates/ssl.key
+      << : *depends-on-waterauth
+
+    mlr-ddot-ingester:
+      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-ddot-ingester:latest
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/mlr-ddot-ingester/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-ddot-ingester/secrets.env
+        - ./docker/secrets/common/secrets.env
+      ports:
+        - "6028:6028"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /home/python/certificates/ssl.crt
+        - source: tomcat_ssl_key
+          target: /home/python/certificates/ssl.key
+      << : *depends-on-waterauth
+
+    mlr-gateway:
+      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-gateway:latest
+      container_name: mlr-gateway
+      network_mode: "host"
+      env_file:
+        - ./docker/configuration/mlr-gateway/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-gateway/secrets.env
+        - ./docker/secrets/common/secrets.env
+      ports:
+        - "6026:6026"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      depends_on:
+        - mlr-legacy-db
+        - water-auth
+        - mlr-legacy-transformer
+        - mlr-ddot-ingester
+        - mlr-validator
+        - mlr-legacy
+        - mlr-wsc-file-exporter
+        - mlr-notification

@@ -1,0 +1,139 @@
+---
+  version: '3.5'
+
+  secrets:
+    tomcat_ssl_crt:
+      file: ./ssl/tomcat-wildcard-dev.crt
+    tomcat_ssl_key:
+      file: ./ssl/tomcat-wildcard-dev.key
+
+  services:
+    water-auth:
+      image: cidasdpdasartip.cr.usgs.gov:8447/water_auth_server:latest
+      network_mode: "host"
+      ports:
+        - "8443:8443"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      env_file:
+        - ./docker/configuration/water-auth/config.env
+        - ./docker/secrets/water-auth/secrets.env
+    rserve:
+      image: cidasdpdasartip.cr.usgs.gov:8447/aqcu/aqcu-repgen:latest
+      ports:
+        - "6311:6311"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+    rabbitmq:
+      image: rabbitmq:3-management
+      ports:
+        - "5672:5672"
+        - "15672:15672"
+        - "25672:25672"
+      env_file:
+        - ./docker/configuration/rabbitmq/config.env
+        - ./docker/secrets/rabbitmq/secrets.env
+    aqcu-ui:
+      image: cidasdpdasartip.cr.usgs.gov:8447/aqcu/aqcu-ui:latest
+      network_mode: "host"
+      depends_on:
+        - "water-auth"
+      ports:
+        - "8446:8446"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      env_file:
+        - ./docker/configuration/aqcu-ui/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/aqcu-ui/secrets.env
+        - ./docker/secrets/common/secrets.env
+    aqcu-gateway:
+      image: cidasdpdasartip.cr.usgs.gov:8447/aqcu/aqcu-gateway:latest
+      network_mode: "host"
+      ports:
+        - "7499:7499"
+      depends_on:
+        - "water-auth"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      env_file:
+        - ./docker/configuration/aqcu-gateway/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/aqcu-gateway/secrets.env
+        - ./docker/secrets/common/secrets.env
+    aqcu-java-to-r:
+      image: cidasdpdasartip.cr.usgs.gov:8447/aqcu/aqcu-java-to-r:latest
+      network_mode: "host"
+      ports:
+        - "7500:7500"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      env_file:
+        - ./docker/configuration/aqcu-java-to-r/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/aqcu-java-to-r/secrets.env
+        - ./docker/secrets/common/secrets.env
+    aqcu-tss-report:
+      image: cidasdpdasartip.cr.usgs.gov:8447/aqcu/aqcu-tss-report:latest
+      network_mode: "host"
+      ports:
+        - "7501:7501"
+      depends_on:
+        - "water-auth"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      env_file:
+        - ./docker/configuration/aqcu-tss-report/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/aqcu-tss-report/secrets.env
+        - ./docker/secrets/common/secrets.env
+    aqcu-dv-hydro-report:
+      image: cidasdpdasartip.cr.usgs.gov:8447/aqcu/aqcu-dv-hydro-report:latest
+      network_mode: "host"
+      ports:
+        - "7502:7502"
+      depends_on:
+        - "water-auth"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      env_file:
+        - ./docker/configuration/aqcu-dv-hydro-report/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/aqcu-dv-hydro-report/secrets.env
+        - ./docker/secrets/common/secrets.env
+    aqcu-lookups:
+      image: cidasdpdasartip.cr.usgs.gov:8447/aqcu/aqcu-lookups:latest
+      network_mode: "host"
+      ports:
+        - "7503:7503"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /certificates/tomcat-wildcard-dev.crt
+        - source: tomcat_ssl_key
+          target: /certificates/tomcat-wildcard-dev.key
+      env_file:
+        - ./docker/configuration/aqcu-lookups/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/aqcu-lookups/secrets.env
+        - ./docker/secrets/common/secrets.env
