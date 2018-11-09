@@ -27,7 +27,7 @@ If you need to make changes to any configuration due to your local system (I.E: 
 
 ## Running
 
-Because there are inter-dependencies between services the startup order is very important. It is recommended to wait for one terminal command to fully startup before exectuing the next command.
+Because there are inter-dependencies between services the startup order is very important. It is recommended to wait for one terminal command to fully startup before executing the next command.
 
 ### Terminal 1: `sudo ./launch_backing_services.sh`
  - Starts Water Auth, S3 Mock, and a Fake SMTP Server
