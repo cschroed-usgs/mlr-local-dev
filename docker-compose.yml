@@ -8,9 +8,9 @@
 
   secrets:
     tomcat_ssl_crt:
-      file: ./ssl/tomcat-wildcard-dev.crt
+      file: ./ssl/wildcard.crt
     tomcat_ssl_key:
-      file: ./ssl/tomcat-wildcard-dev.key
+      file: ./ssl/wildcard.key
 
   services:
     mock-s3:
@@ -69,7 +69,6 @@
           target: /certificates/tomcat-wildcard-dev.key
       depends_on:
         - water-auth
-        - mlr-legacy-db
 
     mlr-notification:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-notification:latest
@@ -175,11 +174,4 @@
         - source: tomcat_ssl_key
           target: /certificates/tomcat-wildcard-dev.key
       depends_on:
-        - mlr-legacy-db
         - water-auth
-        - mlr-legacy-transformer
-        - mlr-ddot-ingester
-        - mlr-validator
-        - mlr-legacy
-        - mlr-wsc-file-exporter
-        - mlr-notification
