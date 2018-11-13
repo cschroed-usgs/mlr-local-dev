@@ -21,7 +21,7 @@ if [[ $EXIT_CODE -ne 0 ]]; then
 fi
 
 echo "Waiting for S3 Mock to come up..."
-until nc -vzw 2 localhost 80; do sleep 2; done
+until nc -vzw 2 $DOCKER_ENGINE_IP 80; do sleep 2; done
 
 echo "Creating test s3 bucket..."
 EXIT_CODE=$(create_s3_bucket)
@@ -34,4 +34,3 @@ fi
 echo "Bucket created successfully"
 echo "Backing services launched successfully."
 exit 0
-
