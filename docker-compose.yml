@@ -30,7 +30,8 @@
 
   services:
     mock-s3:
-      image: andrewgaul/s3proxy
+      image: andrewgaul/s3proxy:latest
+      container_name: mock-s3
       network_mode: "host"
       env_file:
         - ./docker/configuration/mock-s3/config.env
@@ -40,11 +41,13 @@
 
     smtp-server:
       image: digiplant/fake-smtp:latest
+      container_name: smtp-server
       network_mode: "host"
       hostname: smtp.notification.server
 
     water-auth:
       image: cidasdpdasartip.cr.usgs.gov:8447/water_auth_server:latest
+      container_name: water-auth
       network_mode: "host"
       env_file:
         - ./docker/configuration/water-auth/config.env
@@ -55,6 +58,7 @@
 
     mlr-legacy-db:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy-db:latest
+      container_name: mlr-legacy-db
       network_mode: "host"
       env_file:
         - ./docker/configuration/mlr-legacy-db/config.env
@@ -66,6 +70,7 @@
 
     mlr-legacy:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy:latest
+      container_name: mlr-legacy
       network_mode: "host"
       env_file:
         - ./docker/configuration/mlr-legacy/config.env
@@ -75,11 +80,11 @@
       ports:
         - "6010:6010"
       << : *java-secrets
-      depends_on:
-        - water-auth
+      << : *depends-on-waterauth
 
     mlr-notification:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-notification:latest
+      container_name: mlr-notification
       network_mode: "host"
       env_file:
         - ./docker/configuration/mlr-notification/config.env
@@ -95,6 +100,7 @@
 
     mlr-legacy-transformer:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy-transformer:latest
+      container_name: mlr-legacy-transformer
       network_mode: "host"
       env_file:
         - ./docker/configuration/mlr-legacy-transformer/config.env
@@ -108,6 +114,7 @@
 
     mlr-wsc-file-exporter:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-wsc-file-exporter:latest
+      container_name: mlr-wsc-file-exporter
       network_mode: "host"
       env_file:
         - ./docker/configuration/mlr-wsc-file-exporter/config.env
@@ -121,6 +128,7 @@
 
     mlr-validator:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-validator:latest
+      container_name: mlr-validator
       network_mode: "host"
       env_file:
         - ./docker/configuration/mlr-validator/config.env
@@ -134,6 +142,7 @@
 
     mlr-ddot-ingester:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-ddot-ingester:latest
+      container_name: mlr-ddot-ingester
       network_mode: "host"
       env_file:
         - ./docker/configuration/mlr-ddot-ingester/config.env
@@ -157,5 +166,4 @@
       ports:
         - "6026:6026"
       << : *java-secrets
-      depends_on:
-        - water-auth
+      << : *depends-on-waterauth
