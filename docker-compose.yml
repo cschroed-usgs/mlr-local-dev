@@ -34,7 +34,7 @@
       container_name: mock-s3
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/mock-s3/config.env
+        - ./docker/configuration/mock-s3/config.env
       hostname: s3.mock.server
       ports:
         - "8080:80"
@@ -50,8 +50,8 @@
       container_name: water-auth
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/water-auth/config.env
-        - ./docker-reference/secrets/water-auth/secrets.env
+        - ./docker/configuration/water-auth/config.env
+        - ./docker/secrets/water-auth/secrets.env
       ports:
         - "8443:8443"
       << : *java-secrets
@@ -61,10 +61,10 @@
       container_name: mlr-legacy-db
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/mlr-legacy-db/config.env
-        - ./docker-reference/configuration/common/config.env
-        - ./docker-reference/secrets/mlr-legacy-db/secrets.env
-        - ./docker-reference/secrets/common/secrets.env
+        - ./docker/configuration/mlr-legacy-db/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-legacy-db/secrets.env
+        - ./docker/secrets/common/secrets.env
       ports:
         - "5432:5432"
 
@@ -73,10 +73,10 @@
       container_name: mlr-legacy
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/mlr-legacy/config.env
-        - ./docker-reference/configuration/common/config.env
-        - ./docker-reference/secrets/mlr-legacy/secrets.env
-        - ./docker-reference/secrets/common/secrets.env
+        - ./docker/configuration/mlr-legacy/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-legacy/secrets.env
+        - ./docker/secrets/common/secrets.env
       ports:
         - "6010:6010"
       << : *java-secrets
@@ -87,10 +87,10 @@
       container_name: mlr-notification
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/mlr-notification/config.env
-        - ./docker-reference/configuration/common/config.env
-        - ./docker-reference/secrets/mlr-notification/secrets.env
-        - ./docker-reference/secrets/common/secrets.env
+        - ./docker/configuration/mlr-notification/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-notification/secrets.env
+        - ./docker/secrets/common/secrets.env
       ports:
         - "6025:6025"
       << : *java-secrets
@@ -103,10 +103,10 @@
       container_name: mlr-legacy-transformer
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/mlr-legacy-transformer/config.env
-        - ./docker-reference/configuration/common/config.env
-        - ./docker-reference/secrets/mlr-legacy-transformer/secrets.env
-        - ./docker-reference/secrets/common/secrets.env
+        - ./docker/configuration/mlr-legacy-transformer/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-legacy-transformer/secrets.env
+        - ./docker/secrets/common/secrets.env
       ports:
         - "6020:6020"
       << : *python-secrets
@@ -117,10 +117,10 @@
       container_name: mlr-wsc-file-exporter
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/mlr-wsc-file-exporter/config.env
-        - ./docker-reference/configuration/common/config.env
-        - ./docker-reference/secrets/mlr-wsc-file-exporter/secrets.env
-        - ./docker-reference/secrets/common/secrets.env
+        - ./docker/configuration/mlr-wsc-file-exporter/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-wsc-file-exporter/secrets.env
+        - ./docker/secrets/common/secrets.env
       ports:
         - "6024:6024"
       << : *python-secrets
@@ -131,10 +131,10 @@
       container_name: mlr-validator
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/mlr-validator/config.env
-        - ./docker-reference/configuration/common/config.env
-        - ./docker-reference/secrets/mlr-legacy/secrets.env
-        - ./docker-reference/secrets/common/secrets.env
+        - ./docker/configuration/mlr-validator/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-legacy/secrets.env
+        - ./docker/secrets/common/secrets.env
       ports:
         - "6027:6027"
       << : *python-secrets
@@ -145,10 +145,10 @@
       container_name: mlr-ddot-ingester
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/mlr-ddot-ingester/config.env
-        - ./docker-reference/configuration/common/config.env
-        - ./docker-reference/secrets/mlr-ddot-ingester/secrets.env
-        - ./docker-reference/secrets/common/secrets.env
+        - ./docker/configuration/mlr-ddot-ingester/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-ddot-ingester/secrets.env
+        - ./docker/secrets/common/secrets.env
       ports:
         - "6028:6028"
       << : *python-secrets
@@ -159,10 +159,10 @@
       container_name: mlr-gateway
       network_mode: "host"
       env_file:
-        - ./docker-reference/configuration/mlr-gateway/config.env
-        - ./docker-reference/configuration/common/config.env
-        - ./docker-reference/secrets/mlr-gateway/secrets.env
-        - ./docker-reference/secrets/common/secrets.env
+        - ./docker/configuration/mlr-gateway/config.env
+        - ./docker/configuration/common/config.env
+        - ./docker/secrets/mlr-gateway/secrets.env
+        - ./docker/secrets/common/secrets.env
       ports:
         - "6026:6026"
       << : *java-secrets
