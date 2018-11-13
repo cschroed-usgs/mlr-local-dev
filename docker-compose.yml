@@ -120,7 +120,7 @@
       << : *depends-on-waterauth
 
     mlr-validator:
-      image: mlr-validator-service:latest
+      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-validator:latest
       network_mode: "host"
       env_file:
         - ./docker/configuration/mlr-validator/config.env
