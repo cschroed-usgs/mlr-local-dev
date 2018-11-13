@@ -1,0 +1,4 @@
+docker/*
+**/keystore
+**/tomcat.pkcs12
+**/wildcard.*
