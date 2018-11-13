@@ -21,20 +21,20 @@ In order to run the services you will need to generate a unique, local wildcard 
 ### Changing Configuration
 If you need to make changes to any configuration due to your local system (I.E: Ports already in use) you may need to make those changes in multiple locations:
 
-1. `docker-compose.yml` - Ports that are exposd by the services are set here. If you need to change the port that a service is running on you can simply re-map the port exposed by the container to a different port on your host system (`Format: port: host-port:service port within container`). Additionally, other configuration settings such as what configuraiton files to laod from and what cert files to use are set here, but it's unlikely you will need to make any changes to that.
+1. `docker-compose.yml` - Ports that are exposd by the services are set here. If you need to change the port that a service is running on you can simply re-map the port exposed by the container to a different port on your host system (`Format: port: host-port:service port within container`). Additionally, other configuration settings such as what configuration files to load from and what cert files to use are set here, but it's unlikely you will need to make any changes to that.
 
-2. `./docker/configuration/* & ./docker/secrets/*` - Specific configuration for each application is configured here. The `/common` directory is loaded by each `mlr-*` service, so if you need ot set or change configuration applying to _all_ services you should change it there. If you need specific configuration for each service that must be set in each service's specific `{config/secrets}.env` file.
+2. `./docker/configuration/* & ./docker/secrets/*` - Specific configuration for each application is configured here. The `/common` directory is loaded by each `mlr-*` service, so if you need to set or change configuration applying to _all_ services you should change it there. If you need specific configuration for each service that must be set in each service's specific `{config/secrets}.env` file.
 
 ## Running
 
 Because there are inter-dependencies between services the startup order is very important. It is recommended to wait for one terminal command to fully startup before executing the next command.
 
-### Terminal 1: `sudo ./launch_backing_services.sh`
+### Terminal 1: `./launch_backing_services.sh`
  - Starts Water Auth, S3 Mock, and a Fake SMTP Server
  - This script also handles creating the export bucket in the mock s3 server
-### Terminal 2: `sudo docker-compose up mlr-legacy-db`
+### Terminal 2: `docker-compose up mlr-legacy-db`
  - Starts the MLR Legacy PostgreSQL Database
-### Terminal 3: `sudo docker-compose up mlr-legacy mlr-notification mlr-ddot-ingester mlr-wsc-file-exporter mlr-validator mlr-legacy-transformer mlr-gateway`
+### Terminal 3: `docker-compose up mlr-legacy mlr-notification mlr-ddot-ingester mlr-wsc-file-exporter mlr-validator mlr-legacy-transformer mlr-gateway`
  - Starts mlr-legacy mlr-notification mlr-ddot-ingester mlr-wsc-file-exporter mlr-validator mlr-legacy-transformer and mlr-gateway
 
 After completing these steps you should be able to access the MLR UI by visiting: https://localhost:6026/
@@ -46,6 +46,18 @@ If you are looking to work on an MLR service and run it from outside of a docker
 ### Import Certs
 
 You must import the cert from `./ssl/wildcard.crt` into the Java cacerts (for locally running Java services) and the Proper python cert store (for locally running Python services) for the locally running, non-dockerized services to be able to connect to the local dev docker containers.
+
+#### Example commands (may not be entirely accurate for your specific system as file paths can vary):
+Java: 
+```
+$  keytool -import -trustcacerts -file ./ssl/wildcard.crt -alias mlr-local-wildcard -keystore $JAVA_HOME/jre/lib/security/cacerts
+```
+
+Python:
+```
+$  sudo cp ./ssl/wildcard.crt /usr/local/share/ca-certificates/mlr-local-wildcard.crt
+$  sudo update-ca-certificates
+```
 
 ### Configuring
 
@@ -60,11 +72,14 @@ If you configure your locally running service using the same credentials (if app
 In order for this to work properly you should exclude the service you wish to run locally from the list of services launched in the commands above, however it is important that the launch order is maintained, to a dgree. I.E: If you want to work on the mlr-legacy-db you should ensure that you launch your local version of the database prior to launching the set of services listed under `Terminal 3`. If you want to work on any of the services listed in `Terminal 3` you must ensure you have the backing services and mlr-legacy-db running prior to launching your service locally. Note that the order of the services _within_ each command above is **not** important.
 
 ## Service Info
-**Note**: Many of the launch commands here will not properly work until you follow the setup steps above.
+
+This section lists out each of the services and some of the basic information about each one. Much of this information can be obtained from the `docker-compose.yml` file and if any of this configuration needs to be modified that is the first place to look, followed by the config files.
 
 _Dependencies_: Services that must be running before this service can even start up.
 
 _Services Used_: Services that must be running for this service to be fully functional.
+
+**Note**: Many of the launch commands here will not properly work until you follow the setup steps above.
 
 #### water-auth
  - Individual Launch Command: `sudo docker-compose up water-auth`

@@ -6,6 +6,22 @@
     depends_on:
       - water-auth
 
+  x-commons-secrets-java:
+    &java-secrets
+    secrets:
+      - source: tomcat_ssl_crt
+        target: /certificates/tomcat-wildcard-dev.crt
+      - source: tomcat_ssl_key
+        target: /certificates/tomcat-wildcard-dev.key
+
+  x-commons-secrets-python:
+    &python-secrets
+    secrets:
+      - source: tomcat_ssl_crt
+        target: /home/python/certificates/ssl.crt
+      - source: tomcat_ssl_key
+        target: /home/python/certificates/ssl.key
+
   secrets:
     tomcat_ssl_crt:
       file: ./ssl/wildcard.crt
@@ -35,11 +51,7 @@
         - ./docker/secrets/water-auth/secrets.env
       ports:
         - "8443:8443"
-      secrets:
-        - source: tomcat_ssl_crt
-          target: /certificates/tomcat-wildcard-dev.crt
-        - source: tomcat_ssl_key
-          target: /certificates/tomcat-wildcard-dev.key
+      << : *java-secrets
 
     mlr-legacy-db:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy-db:latest
@@ -62,11 +74,7 @@
         - ./docker/secrets/common/secrets.env
       ports:
         - "6010:6010"
-      secrets:
-        - source: tomcat_ssl_crt
-          target: /certificates/tomcat-wildcard-dev.crt
-        - source: tomcat_ssl_key
-          target: /certificates/tomcat-wildcard-dev.key
+      << : *java-secrets
       depends_on:
         - water-auth
 
@@ -80,11 +88,7 @@
         - ./docker/secrets/common/secrets.env
       ports:
         - "6025:6025"
-      secrets:
-        - source: tomcat_ssl_crt
-          target: /certificates/tomcat-wildcard-dev.crt
-        - source: tomcat_ssl_key
-          target: /certificates/tomcat-wildcard-dev.key
+      << : *java-secrets
       depends_on:
         - water-auth
         - smtp-server
@@ -99,11 +103,7 @@
         - ./docker/secrets/common/secrets.env
       ports:
         - "6020:6020"
-      secrets:
-        - source: tomcat_ssl_crt
-          target: /home/python/certificates/ssl.crt
-        - source: tomcat_ssl_key
-          target: /home/python/certificates/ssl.key
+      << : *python-secrets
       << : *depends-on-waterauth
 
     mlr-wsc-file-exporter:
@@ -116,15 +116,11 @@
         - ./docker/secrets/common/secrets.env
       ports:
         - "6024:6024"
-      secrets:
-        - source: tomcat_ssl_crt
-          target: /home/python/certificates/ssl.crt
-        - source: tomcat_ssl_key
-          target: /home/python/certificates/ssl.key
+      << : *python-secrets
       << : *depends-on-waterauth
 
     mlr-validator:
-      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-validator:latest
+      image: mlr-validator-service:latest
       network_mode: "host"
       env_file:
         - ./docker/configuration/mlr-validator/config.env
@@ -133,11 +129,7 @@
         - ./docker/secrets/common/secrets.env
       ports:
         - "6027:6027"
-      secrets:
-        - source: tomcat_ssl_crt
-          target: /home/python/certificates/ssl.crt
-        - source: tomcat_ssl_key
-          target: /home/python/certificates/ssl.key
+      << : *python-secrets
       << : *depends-on-waterauth
 
     mlr-ddot-ingester:
@@ -150,11 +142,7 @@
         - ./docker/secrets/common/secrets.env
       ports:
         - "6028:6028"
-      secrets:
-        - source: tomcat_ssl_crt
-          target: /home/python/certificates/ssl.crt
-        - source: tomcat_ssl_key
-          target: /home/python/certificates/ssl.key
+      << : *python-secrets
       << : *depends-on-waterauth
 
     mlr-gateway:
@@ -168,10 +156,6 @@
         - ./docker/secrets/common/secrets.env
       ports:
         - "6026:6026"
-      secrets:
-        - source: tomcat_ssl_crt
-          target: /certificates/tomcat-wildcard-dev.crt
-        - source: tomcat_ssl_key
-          target: /certificates/tomcat-wildcard-dev.key
+      << : *java-secrets
       depends_on:
         - water-auth

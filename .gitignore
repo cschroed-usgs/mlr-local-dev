@@ -1,1 +1,4 @@
 docker/*
+ssl/keystore
+ssl/tomcat.pkcs12
+ssl/wildcard.*
