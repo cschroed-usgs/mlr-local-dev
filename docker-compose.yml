@@ -75,8 +75,7 @@
       ports:
         - "6010:6010"
       << : *java-secrets
-      depends_on:
-        - water-auth
+      << : *depends-on-waterauth
 
     mlr-notification:
       image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-notification:latest
@@ -157,5 +156,4 @@
       ports:
         - "6026:6026"
       << : *java-secrets
-      depends_on:
-        - water-auth
+      << : *depends-on-waterauth
