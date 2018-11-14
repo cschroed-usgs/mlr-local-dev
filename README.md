@@ -50,7 +50,7 @@ You must import the cert from `./ssl/wildcard.crt` into the Java cacerts (for lo
 #### Example commands (may not be entirely accurate for your specific system as file paths can vary):
 Java: 
 ```
-$  keytool -import -trustcacerts -file ./ssl/wildcard.crt -alias mlr-local-wildcard -keystore $JAVA_HOME/jre/lib/security/cacerts
+$  sudo keytool -import -trustcacerts -file ./ssl/wildcard.crt -alias mlr-local-wildcard -keystore $JAVA_HOME/jre/lib/security/cacerts
 ```
 
 Python:
