@@ -44,6 +44,8 @@
       container_name: smtp-server
       network_mode: "host"
       hostname: smtp.notification.server
+      volumes:
+        - ./email:/var/mail
 
     water-auth:
       image: cidasdpdasartip.cr.usgs.gov:8447/water_auth_server:latest

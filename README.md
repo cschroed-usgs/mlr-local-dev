@@ -104,6 +104,7 @@ _Services Used_: Services that must be running for this service to be fully func
  - Port: 25
  - Context Path: /
  - Test URL: https://localhost:25
+ - Volume: ./email Emails sent by this mock SMTP server are delivered to this directory instead of to real email addresses.
 
 #### mlr-legacy-db
  - Individual Launch Command: `sudo docker-compose up mlr-legacy-db`
