@@ -14,7 +14,7 @@ NGINX_ADDRESS=${NGINX_ADDRESS:-localhost}
 export IMAGES="
 water_auth_server
 mlr/mlr-legacy-db:latest
-mlr/mlr-legacy
+mlr/mlr-legacy:latest
 mlr/mlr-notification:latest
 mlr/mlr-legacy-transformer:latest
 mlr/mlr-wsc-file-exporter:latest
