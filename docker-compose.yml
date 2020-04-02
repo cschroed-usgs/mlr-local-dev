@@ -48,7 +48,7 @@
         - ./email:/var/mail
 
     water-auth:
-      image: cidasdpdasartip.cr.usgs.gov:8447/water_auth_server:latest
+      image: code.chs.usgs.gov:5001/wma-devops-public/waterauth-server:latest
       container_name: water-auth
       network_mode: "host"
       env_file:
@@ -59,7 +59,7 @@
       << : *java-secrets
 
     mlr-legacy-db:
-      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy-db:latest
+      image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-legacy-db:latest
       container_name: mlr-legacy-db
       network_mode: "host"
       env_file:
@@ -71,7 +71,7 @@
         - "5432:5432"
 
     mlr-legacy:
-      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy:latest
+      image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-legacy:latest
       container_name: mlr-legacy
       network_mode: "host"
       env_file:
@@ -85,7 +85,7 @@
       << : *depends-on-waterauth
 
     mlr-notification:
-      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-notification:latest
+      image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-notification:latest
       container_name: mlr-notification
       network_mode: "host"
       env_file:
@@ -101,7 +101,7 @@
         - smtp-server
 
     mlr-legacy-transformer:
-      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-legacy-transformer:latest
+      image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-legacy-transformer:latest
       container_name: mlr-legacy-transformer
       network_mode: "host"
       env_file:
@@ -115,7 +115,7 @@
       << : *depends-on-waterauth
 
     mlr-wsc-file-exporter:
-      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-wsc-file-exporter:latest
+      image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-wsc-file-exporter:latest
       container_name: mlr-wsc-file-exporter
       network_mode: "host"
       env_file:
@@ -129,7 +129,7 @@
       << : *depends-on-waterauth
 
     mlr-validator:
-      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-validator:latest
+      image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-validator:latest
       container_name: mlr-validator
       network_mode: "host"
       env_file:
@@ -143,7 +143,7 @@
       << : *depends-on-waterauth
 
     mlr-ddot-ingester:
-      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-ddot-ingester:latest
+      image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-ddot-ingester:latest
       container_name: mlr-ddot-ingester
       network_mode: "host"
       env_file:
@@ -157,7 +157,7 @@
       << : *depends-on-waterauth
 
     mlr-gateway:
-      image: cidasdpdasartip.cr.usgs.gov:8447/mlr/mlr-gateway:latest
+      image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-gateway:latest
       container_name: mlr-gateway
       network_mode: "host"
       env_file:
