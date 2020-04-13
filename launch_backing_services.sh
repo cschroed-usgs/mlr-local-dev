@@ -5,7 +5,7 @@
 DOCKER_ENGINE_IP="${DOCKER_ENGINE_IP:-127.0.0.1}"
 
 launch_services () {
-  docker-compose -f docker-compose.yml up --no-color --detach --renew-anon-volumes water-auth mock-s3 smtp-server
+  docker-compose -f docker-compose.yml up --no-color --detach --renew-anon-volumes mlr-keycloak mock-s3 smtp-server
 }
 
 create_s3_bucket () {
