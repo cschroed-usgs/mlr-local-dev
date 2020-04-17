@@ -632,9 +632,9 @@
           "consentRequired": false,
           "config": {
             "multivalued": "true",
-            "userinfo.token.claim": "false",
+            "userinfo.token.claim": "true",
             "user.attribute": "foo",
-            "id.token.claim": "false",
+            "id.token.claim": "true",
             "access.token.claim": "true",
             "claim.name": "authorities",
             "jsonType.label": "String",
@@ -664,7 +664,7 @@
           "consentRequired": false,
           "config": {
             "included.client.audience": "mlr-local",
-            "id.token.claim": "false",
+            "id.token.claim": "true",
             "access.token.claim": "true"
           }
         },
