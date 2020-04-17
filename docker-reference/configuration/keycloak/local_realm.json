@@ -343,9 +343,9 @@
   "groups": [],
   "users" : [
     {
-      "username" : "mlr-user",
+      "username" : "mlruser",
       "enabled": true,
-      "email" : "user@test.local",
+      "email" : "user@test.gov",
       "firstName": "user_first",
       "lastName": "user_last",
       "credentials" : [
@@ -360,9 +360,9 @@
       }
     },
     {
-      "username" : "mlr-admin",
+      "username" : "mlradmin",
       "enabled": true,
-      "email" : "admin@test.local",
+      "email" : "admin@test.gov",
       "firstName": "admin_first",
       "lastName": "admin_last",
       "credentials" : [
@@ -632,9 +632,9 @@
           "consentRequired": false,
           "config": {
             "multivalued": "true",
-            "userinfo.token.claim": "false",
+            "userinfo.token.claim": "true",
             "user.attribute": "foo",
-            "id.token.claim": "false",
+            "id.token.claim": "true",
             "access.token.claim": "true",
             "claim.name": "authorities",
             "jsonType.label": "String",
@@ -664,7 +664,7 @@
           "consentRequired": false,
           "config": {
             "included.client.audience": "mlr-local",
-            "id.token.claim": "false",
+            "id.token.claim": "true",
             "access.token.claim": "true"
           }
         },

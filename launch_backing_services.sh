@@ -9,7 +9,7 @@ launch_services () {
 }
 
 create_s3_bucket () {
-  curl --request PUT "http://${DOCKER_ENGINE_IP}:80/mock-bucket-test"
+  curl --silent --request PUT "http://${DOCKER_ENGINE_IP}:80/mock-bucket-test"
 }
 
 echo "Launching MLR Backing Services..."
@@ -21,16 +21,20 @@ if [[ $EXIT_CODE -ne 0 ]]; then
 fi
 
 echo "Waiting for S3 Mock to come up..."
-until nc -vzw 2 $DOCKER_ENGINE_IP 80; do sleep 2; done
-
-echo "Creating test s3 bucket..."
+until nc -vzw 2 $DOCKER_ENGINE_IP 80 &>/dev/null ; do echo -ne . && sleep 2; done
+echo
+echo "Creating test S3 bucket..."
 EXIT_CODE=$(create_s3_bucket)
 
 if [[ $EXIT_CODE -ne 0 ]]; then
   echo "Could not create S3 bucket"
   exit $EXIT_CODE
 fi
+echo "S3 bucket created successfully."
 
-echo "Bucket created successfully"
+echo "Waiting for MLR KeyCloak to come up. This can take up to 2 minutes..."
+until nc -vzw 2 $DOCKER_ENGINE_IP 9443 &>/dev/null ; do echo -ne . && sleep 5; done
+until $(curl -k --output /dev/null --silent --head --fail https://$DOCKER_ENGINE_IP:9443/auth/realms/mlr); do echo -ne . && sleep 2; done
+echo
 echo "Backing services launched successfully."
 exit 0
