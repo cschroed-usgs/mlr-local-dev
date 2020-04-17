@@ -2,6 +2,18 @@
 
 A set of scripts, configuration, and other utilities to aid in setting up the MLR development environment.
 
+## Local Development Users
+
+MLR Local Dev comes with a pre-configured KeyCloak instance for running locally. This instance has a pre-defined "mlr" realm that has the proper client, user, and role configurations to allow logging into and interacting with MLR locally. The KeyCloak instance comes with 3 users:
+
+1. `admin` (password: `admin`) - This admin user is the only user that can make changes to the KeyCloak configuration itself. However, this user does not have write access to MLR.
+
+2. `mlr-user` (password: `password`) - This user is meant to serve as a standard user who has no special roles assigned at all. This user cannot make changes to KeyCloak configuration and does not have write access to MLR.
+
+3. `mlr-admin` (password: `password`) - This user is meant to serve as an admin user for MLR. This user cannot make changes to KeyCloak configuration but does have write access to MLR (assigned `mlr_allowed` role).
+
+When developing locally it is recommended that you use the `mlr-admin` user so that you can fully access your running MLR instance, unless you are testing authorization related changes and want to use the `mlr-user` user. You should only use the `admin` user if you are making change to the KeyCloak configuration itself through the admin console.
+
 ## Making changes and GitIgnore
 
 In order to help prevent accidental committing of secrets and other non-public configuration this project provides reference configuration files for tomcat and docker that should be copied (as explained in the setup steps below) and then modified for local use from the copies. The .gitignore for this project is setup to ignore the following directories created during the setup steps below:
@@ -36,7 +48,7 @@ Because there are inter-dependencies between services the startup order is very 
 
 ### Terminal 1: `./launch_backing_services.sh`
 
-- Starts Water Auth, S3 Mock, and a Fake SMTP Server
+- Starts MLR KeyCloak, S3 Mock, and a Fake SMTP Server
 - This script also handles creating the export bucket in the mock s3 server
 
 ### Terminal 1: `docker-compose up mlr-legacy-db`
@@ -45,7 +57,7 @@ Because there are inter-dependencies between services the startup order is very 
 
 ### Terminal 2: `docker-compose up mlr-legacy mlr-notification mlr-ddot-ingester mlr-wsc-file-exporter mlr-validator mlr-legacy-transformer mlr-gateway`
 
-- This should not be run until Water Auth is running and accessible via <https://localhost:8443/auth> or it will fail as all of these services require that Water Auth is running before they can successfully start.
+- This should not be run until MLR KeyCloak is running and accessible via <https://localhost:9443/> or it will fail as all of these services require that MLR KeyCloak is running before they can successfully start.
 - Starts mlr-legacy mlr-notification mlr-ddot-ingester mlr-wsc-file-exporter mlr-validator mlr-legacy-transformer and mlr-gateway
 
 After completing these steps you should be able to access the MLR UI by visiting: <https://localhost:6026/>
@@ -81,7 +93,7 @@ It is recommended that you configure your locally running service as similar to 
 
 In order to configure your locally running service like the dockerized one open the `config.env` and `secrets.env` files associated with the service you are running (located in `./docker/{configuration/secrets}/{service name}` if you follow the setup steps above and copied the reference configuration). These files contain the list of environment variables that are being set in the container, and then propagated into the service in question. If you are not running your service from within a docker container you can either set these environment variables in the context in which you're running your application, or open the application configuration file (Python: `/config.py` | Java: `/src/main/resources/application.yml`) and look for where these environment variables are being mapped into application configuration (Python: Look for `os.getenv()` calls | Java: Look for `${ENVIRONMENT_VARIABLE_NAME}`). You can then set the appropriate application configuration values in your locally running application to the equivalent value mapped from the `config.env` and `secrets.env` files.
 
-If you configure your locally running service using the same credentials (if applicable), Water Auth configuration (if applicable), port, and context path, then there should be no additional configuration required of the local development dockerized services, unless your changes are introducing new configuration.
+If you configure your locally running service using the same credentials (if applicable), KeyCloak configuration (if applicable), port, and context path, then there should be no additional configuration required of the local development dockerized services, unless your changes are introducing new configuration.
 
 ### Launching
 
@@ -105,14 +117,14 @@ _Services Used_: Services that must be running for this service to be fully func
 
 **Note**: Many of the launch commands here will not properly work until you follow the setup steps above.
 
-### water-auth
+### mlr-keycloak
 
-- Individual Launch Command: `sudo docker-compose up water-auth`
+- Individual Launch Command: `sudo docker-compose up mlr-keycloak`
 - Dependencies: None
 - Services Used: None
-- Port: 8443
-- Context Path: /auth
-- Test URL: <https://localhost:8443/auth>
+- Port: 9080,9443
+- Context Path: /
+- Test URL: <https://localhost:9443/>
 
 ### mock-s3
 
@@ -145,7 +157,7 @@ _Services Used_: Services that must be running for this service to be fully func
 ### mlr-gateway
 
 - Individual Launch Command: `sudo docker-compose up mlr-gateway`
-- Dependencies: water-auth, mlr-legacy-db
+- Dependencies: mlr-keycloak, mlr-legacy-db
 - Services Used: mlr-ddot-ingester, mlr-validator, mlr-legacy-transformer, mlr-legacy, mlr-wsc-file-exporter, mlr-notification
 - Port: 6026
 - Context Path: /
@@ -154,7 +166,7 @@ _Services Used_: Services that must be running for this service to be fully func
 ### mlr-ddot-ingester
 
 - Individual Launch Command: `sudo docker-compose up mlr-ddot-ingester`
-- Dependencies: water-auth
+- Dependencies: mlr-keycloak
 - Services Used: None
 - Port: 6028
 - Context Path: /
@@ -163,7 +175,7 @@ _Services Used_: Services that must be running for this service to be fully func
 ### mlr-validator
 
 - Individual Launch Command: `sudo docker-compose up mlr-validator`
-- Dependencies: water-auth
+- Dependencies: mlr-keycloak
 - Services Used: None
 - Port: 6027
 - Context Path: /
@@ -172,7 +184,7 @@ _Services Used_: Services that must be running for this service to be fully func
 ### mlr-legacy-transformer
 
 - Individual Launch Command: `sudo docker-compose up mlr-legacy-transformer`
-- Dependencies: water-auth
+- Dependencies: mlr-keycloak
 - Services Used: None
 - Port: 6020
 - Context Path: /
@@ -181,7 +193,7 @@ _Services Used_: Services that must be running for this service to be fully func
 ### mlr-legacy
 
 - Individual Launch Command: `sudo docker-compose up mlr-legacy`
-- Dependencies: water-auth, mlr-legacy-db
+- Dependencies: mlr-keycloak, mlr-legacy-db
 - Services Used: None
 - Port: 6010
 - Context Path: /
@@ -190,7 +202,7 @@ _Services Used_: Services that must be running for this service to be fully func
 ### mlr-wsc-file-exporter
 
 - Individual Launch Command: `sudo docker-compose up mlr-wsc-file-exporter`
-- Dependencies: water-auth
+- Dependencies: mlr-keycloak
 - Services Used: mock-s3 (with s3 bucket created as done in the `launch_backing_services.sh` script)
 - Port: 6024
 - Context Path: /
@@ -199,7 +211,7 @@ _Services Used_: Services that must be running for this service to be fully func
 ### mlr-notification
 
 - Individual Launch Command: `sudo docker-compose up mlr-notification`
-- Dependencies: water-auth, smtp-server
+- Dependencies: mlr-keycloak, smtp-server
 - Services Used: None
 - Port: 6025
 - Context Path: /

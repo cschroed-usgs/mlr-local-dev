@@ -2,9 +2,9 @@
   version: '3.6'
 
   x-commons-depends:
-    &depends-on-waterauth
+    &depends-on-keycloak
     depends_on:
-      - water-auth
+      - mlr-keycloak
 
   x-commons-secrets-java:
     &java-secrets
@@ -47,16 +47,35 @@
       volumes:
         - ./email:/var/mail
 
-    water-auth:
-      image: code.chs.usgs.gov:5001/wma-devops-public/waterauth-server:latest
-      container_name: water-auth
+    mlr-keycloak:
+      image: jboss/keycloak
+      container_name: mlr-keycloak
       network_mode: "host"
-      env_file:
-        - ./docker/configuration/water-auth/config.env
-        - ./docker/secrets/water-auth/secrets.env
       ports:
-        - "8443:8443"
-      << : *java-secrets
+        - "9080:9080"
+        - "9443:9443"
+      #command: ["-b", "0.0.0.0", "-Djboss.socket.binding.port-offset=1000"]
+      environment:
+        - PROXY_ADDRESS_FORWARDING=true
+        - DB_VENDOR=h2
+        - KEYCLOAK_USER=admin
+        - KEYCLOAK_PASSWORD=admin
+      entrypoint: "/opt/jboss/tools/docker-entrypoint.sh -b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Djboss.socket.binding.port-offset=1000 -Djgroups.bind_addr=127.0.0.1 -Djboss.bind.address.private=0.0.0.0"
+      secrets:
+        - source: tomcat_ssl_crt
+          target: /etc/x509/https/tls.crt
+        - source: tomcat_ssl_key
+          target: /etc/x509/https/tls.key
+      volumes:
+        - type: bind
+          source: ./docker/configuration/keycloak/local_realm.json
+          target: /tmp/local_realm.json
+        - type: bind
+          source: ./docker/configuration/keycloak/load_realm.sh
+          target: /tmp/load_realm.sh
+        - type: bind
+          source: ./docker/configuration/keycloak/start_load_keycloak.sh
+          target: /opt/jboss/startup-scripts/start_load_keycloak.sh
 
     mlr-legacy-db:
       image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-legacy-db:latest
@@ -82,7 +101,7 @@
       ports:
         - "6010:6010"
       << : *java-secrets
-      << : *depends-on-waterauth
+      << : *depends-on-keycloak
 
     mlr-notification:
       image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-notification:latest
@@ -97,7 +116,7 @@
         - "6025:6025"
       << : *java-secrets
       depends_on:
-        - water-auth
+        - mlr-keycloak
         - smtp-server
 
     mlr-legacy-transformer:
@@ -112,7 +131,7 @@
       ports:
         - "6020:6020"
       << : *python-secrets
-      << : *depends-on-waterauth
+      << : *depends-on-keycloak
 
     mlr-wsc-file-exporter:
       image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-wsc-file-exporter:latest
@@ -126,7 +145,7 @@
       ports:
         - "6024:6024"
       << : *python-secrets
-      << : *depends-on-waterauth
+      << : *depends-on-keycloak
 
     mlr-validator:
       image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-validator:latest
@@ -140,7 +159,7 @@
       ports:
         - "6027:6027"
       << : *python-secrets
-      << : *depends-on-waterauth
+      << : *depends-on-keycloak
 
     mlr-ddot-ingester:
       image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-ddot-ingester:latest
@@ -154,7 +173,7 @@
       ports:
         - "6028:6028"
       << : *python-secrets
-      << : *depends-on-waterauth
+      << : *depends-on-keycloak
 
     mlr-gateway:
       image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-gateway:latest
@@ -168,4 +187,4 @@
       ports:
         - "6026:6026"
       << : *java-secrets
-      << : *depends-on-waterauth
+      << : *depends-on-keycloak
