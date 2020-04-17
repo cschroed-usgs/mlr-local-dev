@@ -8,11 +8,11 @@ MLR Local Dev comes with a pre-configured KeyCloak instance for running locally.
 
 1. `admin` (password: `admin`) - This admin user is the only user that can make changes to the KeyCloak configuration itself. However, this user does not have write access to MLR.
 
-2. `mlr-user` (password: `password`) - This user is meant to serve as a standard user who has no special roles assigned at all. This user cannot make changes to KeyCloak configuration and does not have write access to MLR.
+2. `mlruser` (password: `password`) - This user is meant to serve as a standard user who has no special roles assigned at all. This user cannot make changes to KeyCloak configuration and does not have write access to MLR.
 
-3. `mlr-admin` (password: `password`) - This user is meant to serve as an admin user for MLR. This user cannot make changes to KeyCloak configuration but does have write access to MLR (assigned `mlr_allowed` role).
+3. `mlradmin` (password: `password`) - This user is meant to serve as an admin user for MLR. This user cannot make changes to KeyCloak configuration but does have write access to MLR (assigned `mlr_allowed` role).
 
-When developing locally it is recommended that you use the `mlr-admin` user so that you can fully access your running MLR instance, unless you are testing authorization related changes and want to use the `mlr-user` user. You should only use the `admin` user if you are making change to the KeyCloak configuration itself through the admin console.
+When developing locally it is recommended that you use the `mlr-admin` user so that you can fully access your running MLR instance, unless you are testing authorization related changes and want to use the `mlruser` user. You should only use the `admin` user if you are making change to the KeyCloak configuration itself through the admin console.
 
 ## Making changes and GitIgnore
 

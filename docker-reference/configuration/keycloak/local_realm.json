@@ -343,9 +343,9 @@
   "groups": [],
   "users" : [
     {
-      "username" : "mlr-user",
+      "username" : "mlruser",
       "enabled": true,
-      "email" : "user@test.local",
+      "email" : "user@test.gov",
       "firstName": "user_first",
       "lastName": "user_last",
       "credentials" : [
@@ -360,9 +360,9 @@
       }
     },
     {
-      "username" : "mlr-admin",
+      "username" : "mlradmin",
       "enabled": true,
-      "email" : "admin@test.local",
+      "email" : "admin@test.gov",
       "firstName": "admin_first",
       "lastName": "admin_last",
       "credentials" : [
