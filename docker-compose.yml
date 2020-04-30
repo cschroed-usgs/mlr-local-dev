@@ -48,7 +48,7 @@
         - ./email:/var/mail
 
     mlr-keycloak:
-      image: jboss/keycloak
+      image: jboss/keycloak:10.0.0
       container_name: mlr-keycloak
       network_mode: "host"
       ports:
