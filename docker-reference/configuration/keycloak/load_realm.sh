@@ -3,7 +3,7 @@
 # Waits until the keycloak server is fully up and running and then uses the CLI to 
 # import the MLR realm and add users
 cd ~/keycloak/bin
-until curl "keycloak:9080" | grep -q "html"; do sleep 4; done
+until curl "localhost:9080" | grep -q "html"; do sleep 4; done
 
 # Check if MLR realm already exists before adding (can happen on container restart)
 status_code=$(curl --write-out %{http_code} --silent --output /dev/null http://localhost:9080/auth/realms/mlr/)
