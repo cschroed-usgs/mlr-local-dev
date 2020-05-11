@@ -148,8 +148,7 @@
       << : *depends-on-keycloak
 
     mlr-validator:
-      image: carl-mlr-validator
-      #image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-validator:latest
+      image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-validator:latest
       container_name: mlr-validator
       network_mode: "host"
       env_file:
