@@ -3,3 +3,4 @@ docker/*
 **/tomcat.pkcs12
 **/wildcard.*
 email/*
+remote-references/*

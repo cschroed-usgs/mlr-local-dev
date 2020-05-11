@@ -46,16 +46,38 @@ If you need to make changes to any configuration due to your local system (I.E: 
 
 Because there are inter-dependencies between services the startup order is very important. It is recommended to wait for one terminal command to fully startup before executing the next command.
 
-### Terminal 1: `./launch_backing_services.sh`
+### Terminal 1
+
+#### Download remote reference lists from S3
+
+```bash
+saml2aws login #(or similar)
+```
+
+```bash
+./retrieve-remote-reference-lists.sh
+```
+
+#### Launch Core Services
+
+```bash
+./launch_backing_services.sh
+```
 
 - Starts MLR KeyCloak, S3 Mock, and a Fake SMTP Server
 - This script also handles creating the export bucket in the mock s3 server
 
-### Terminal 1: `docker-compose up mlr-legacy-db`
+```bash
+docker-compose up mlr-legacy-db
+```
 
 - Starts the MLR Legacy PostgreSQL Database
 
-### Terminal 2: `docker-compose up mlr-legacy mlr-notification mlr-ddot-ingester mlr-wsc-file-exporter mlr-validator mlr-legacy-transformer mlr-gateway`
+### Terminal 2
+
+```bash
+docker-compose up mlr-legacy mlr-notification mlr-ddot-ingester mlr-wsc-file-exporter mlr-validator mlr-legacy-transformer mlr-gateway
+```
 
 - This should not be run until MLR KeyCloak is running and accessible via <https://localhost:9443/> or it will fail as all of these services require that MLR KeyCloak is running before they can successfully start.
 - Starts mlr-legacy mlr-notification mlr-ddot-ingester mlr-wsc-file-exporter mlr-validator mlr-legacy-transformer and mlr-gateway
@@ -77,7 +99,7 @@ You must import the cert from `./ssl/wildcard.crt` into the Java cacerts (for lo
 Java:
 
 ```bash
-sudo keytool -import -trustcacerts -file ./ssl/wildcard.crt -alias mlr-local-wildcard -keystore $JAVA_HOME/jre/lib/security/cacerts
+sudo keytool -import -trustcacerts -file ./ssl/wildcard.crt -alias mlr-local-wildcard -keystore $JAVA_HOME/lib/security/cacerts
 ```
 
 Python:
@@ -97,7 +119,7 @@ If you configure your locally running service using the same credentials (if app
 
 ### Launching
 
-In order for this to work properly you should exclude the service you wish to run locally from the list of services launched in the commands above, however it is important that the launch order is maintained, to a degree. I.E: If you want to work on the mlr-legacy-db you should ensure that you launch your local version of the database prior to launching the set of services listed under `Terminal 3`. If you want to work on any of the services listed in `Terminal 3` you must ensure you have the backing services and mlr-legacy-db running prior to launching your service locally. Note that the order of the services _within_ each command above is **not** important.
+In order for this to work properly you should exclude the service you wish to run locally from the list of services launched in the commands above, however it is important that the launch order is maintained, to a degree. I.E: If you want to work on the mlr-legacy-db you should ensure that you launch your local version of the database prior to launching the set of services listed under `Terminal 2`. If you want to work on any of the services listed in `Terminal 2` you must ensure you have the backing services and mlr-legacy-db running prior to launching your service locally. Note that the order of the services _within_ each command above is **not** important.
 
 ## Working with Individual Service Repos
 
