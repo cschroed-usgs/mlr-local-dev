@@ -154,7 +154,7 @@
       env_file:
         - ./docker/configuration/mlr-validator/config.env
         - ./docker/configuration/common/config.env
-        - ./docker/secrets/mlr-legacy/secrets.env
+        - ./docker/secrets/mlr-validator/secrets.env
         - ./docker/secrets/common/secrets.env
       volumes:
         - type: bind
