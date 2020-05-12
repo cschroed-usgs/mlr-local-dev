@@ -169,10 +169,6 @@
       image: code.chs.usgs.gov:5001/wma/docker/mlr/mlr-ddot-ingester:latest
       container_name: mlr-ddot-ingester
       network_mode: "host"
-      volumes:
-        - type: bind
-          source: ./remote-references
-          target: /home/python/remote-references
       env_file:
         - ./docker/configuration/mlr-ddot-ingester/config.env
         - ./docker/configuration/common/config.env
