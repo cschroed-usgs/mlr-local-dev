@@ -32,7 +32,6 @@
     mock-s3:
       image: andrewgaul/s3proxy:latest
       container_name: mock-s3
-      network_mode: "host"
       env_file:
         - ./docker/configuration/mock-s3/config.env
       hostname: s3.mock.server
