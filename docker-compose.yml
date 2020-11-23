@@ -30,7 +30,7 @@
 
   services:
     mock-s3:
-      image: andrewgaul/s3proxy:latest
+      image: artifactory.wma.chs.usgs.gov/docker-official-mirror/andrewgaul/s3proxy:latest
       container_name: mock-s3
       env_file:
         - ./docker/configuration/mock-s3/config.env
@@ -39,7 +39,7 @@
         - "8080:80"
 
     smtp-server:
-      image: digiplant/fake-smtp:latest
+      image: artifactory.wma.chs.usgs.gov/docker-official-mirror/digiplant/fake-smtp:latest
       container_name: smtp-server
       network_mode: "host"
       hostname: smtp.notification.server
@@ -47,7 +47,7 @@
         - ./email:/var/mail
 
     mlr-keycloak:
-      image: jboss/keycloak:10.0.0
+      image: artifactory.wma.chs.usgs.gov/docker-official-mirror/jboss/keycloak:10.0.0
       container_name: mlr-keycloak
       network_mode: "host"
       ports:
