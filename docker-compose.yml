@@ -29,14 +29,22 @@
       file: ./ssl/wildcard.key
 
   services:
-    mock-s3:
-      image: artifactory.wma.chs.usgs.gov/docker-official-mirror/andrewgaul/s3proxy:latest
-      container_name: mock-s3
-      env_file:
-        - ./docker/configuration/mock-s3/config.env
-      hostname: s3.mock.server
+    localstack:
+      container_name: localstack
+      image: artifactory.wma.chs.usgs.gov/docker-official-mirror/localstack/localstack
+      hostname: localstack
+      network_mode: "host"
       ports:
-        - "8080:80"
+        - "4566:4566"
+      env_file:
+        # import AWS_REGION etc
+        - ./docker/configuration/common/config.env
+      environment:
+        - SERVICES=s3,sns
+        - HOSTNAME_EXTERNAL=localhost
+        - HOSTNAME=localhost
+        - DEFAULT_REGION=${AWS_REGION}
+        - DEBUG=1
 
     smtp-server:
       image: artifactory.wma.chs.usgs.gov/docker-official-mirror/digiplant/fake-smtp:latest

@@ -26,6 +26,12 @@ If you want to make changes to the configuration that is persisted and can be us
 
 ## Setup
 
+### Prerequisites
+
+* bash
+* docker, docker-compose
+* aws cli, [saml2aws](https://github.com/Versent/saml2aws) (or equivalent means of authenticating with WMA AWS accounts)
+
 ### Copy Reference Docker Configuration
 
 The docker configuration is currently located in `mlr-local-dev/docker-reference/`. This represents the reference configuration and is what users of this project should start from. You should make a copy of this directory called `docker` in the same root directory of this project (so you'd end up with `mlr-local-dev/docker-reference/configuration/...` and `mlr-local-dev/docker/configuration...`). Any local configuration changes you want to make should be done to your files in `mlr-local-dev/docker` as these are the ones that will be read by the docker-compose file and these are ignored by the gitignore.
@@ -55,7 +61,7 @@ saml2aws login #(or similar)
 ```
 
 ```bash
-./retrieve-remote-reference-lists.sh
+./retrieve-remote-reference-lists-awscli.sh
 ```
 
 #### Launch Core Services
