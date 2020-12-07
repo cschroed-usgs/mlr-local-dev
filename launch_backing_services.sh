@@ -24,7 +24,8 @@ create_s3_bucket () {
 
 create_sns_topic () {
   echo "Creating mock SNS topic..."
-  aws --endpoint-url="${LOCALSTACK_ENDPOINT}" sns create-topic --name mock-topic-test
+  # Developers are likely to submit duplicate messages within a 5-minute window when working locally, so Content Based Deduplication is turned off.
+  aws --endpoint-url="${LOCALSTACK_ENDPOINT}" sns create-topic --name mock-topic-test-fifo --attributes 'FifoTopic=true,ContentBasedDeduplication=false'
   exit_with_message_on_failure $? "Could not create SNS topic"
 }
 
